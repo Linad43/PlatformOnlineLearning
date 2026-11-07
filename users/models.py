@@ -124,9 +124,29 @@ class Payment(models.Model):
         choices=PAYMENT_METHOD_CHOICES,
         verbose_name='Способ оплаты',
     )
+    stripe_product_id = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name='Stripe Product ID',
+    )
+    stripe_price_id = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name='Stripe Price ID',
+    )
+    stripe_session_id = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name='Stripe Session ID',
+    )
+    payment_url = models.URLField(
+        blank=True,
+        verbose_name='Ссылка на оплату',
+    )
 
     def __str__(self):
         return f'Платёж №{self.pk} — {self.amount}'
+
 
 class Subscription(models.Model):
     user = models.ForeignKey(
