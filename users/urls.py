@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     PaymentListAPIView,
     RegistrationAPIView,
-    UserViewSet,
+    UserViewSet, SubscriptionAPIView,
 )
 
 router = DefaultRouter()
@@ -14,4 +14,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('register/', RegistrationAPIView.as_view(), name='register'),
     path('payments/', PaymentListAPIView.as_view(), name='payment-list'),
+    path('subscriptions/', SubscriptionAPIView.as_view(), name='subscription-toggle'),
 ]

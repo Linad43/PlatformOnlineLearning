@@ -2,6 +2,7 @@ from rest_framework import viewsets, generics
 from rest_framework.exceptions import PermissionDenied
 
 from .models import Course, Lesson
+from .panginators import MaterialPagination
 from .permissions import MaterialPermission, is_moderator
 from .serializers import CourseSerializer, LessonSerializer
 
@@ -9,6 +10,7 @@ from .serializers import CourseSerializer, LessonSerializer
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = [MaterialPermission]
+    pagination_class = MaterialPagination
 
     def get_queryset(self):
         if is_moderator(self.request.user):
@@ -23,6 +25,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [MaterialPermission]
+    pagination_class = MaterialPagination
 
     def get_queryset(self):
         if is_moderator(self.request.user):

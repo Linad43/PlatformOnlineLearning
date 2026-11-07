@@ -1,10 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, generics, viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework import filters, generics, viewsets, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Payment
+from materials.models import Course
+from .models import Payment, Subscription
 from .permissions import UserAccessPermission
 from .serializers import (
     PaymentSerializer,
@@ -70,3 +74,44 @@ class PaymentListAPIView(generics.ListAPIView):
             return Payment.objects.all()
 
         return Payment.objects.filter(user=user)
+
+
+class SubscriptionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        course_id = request.data.get('course_id')
+
+        if not course_id:
+            return Response(
+                {'error': 'Необходимо указать course_id.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        course = get_object_or_404(
+            Course,
+            pk=course_id,
+        )
+
+        subscription = Subscription.objects.filter(
+            user=request.user,
+            course=course,
+        )
+
+        if subscription.exists():
+            subscription.delete()
+
+            return Response({
+                'message': 'Подписка удалена.',
+                'is_subscribed': False,
+            })
+
+        Subscription.objects.create(
+            user=request.user,
+            course=course,
+        )
+
+        return Response({
+            'message': 'Подписка добавлена.',
+            'is_subscribed': True,
+        })
