@@ -127,3 +127,28 @@ class Payment(models.Model):
 
     def __str__(self):
         return f'Платёж №{self.pk} — {self.amount}'
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+        verbose_name='Пользователь',
+    )
+    course = models.ForeignKey(
+        'materials.Course',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+        verbose_name='Курс',
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'course'],
+                name='unique_user_course_subscription',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.user} → {self.course}'

@@ -30,3 +30,7 @@ class PaymentAdmin(admin.ModelAdmin):
     )
     list_filter = ('payment_method', 'payment_date')
     search_fields = ('user__email',)
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc5MzU0OTQwMSwiaWF0IjoxNzkzNDYzMDAxLCJqdGkiOiI4ZDQ4MWYxYmMxYmI0NjU4YWIwMzg2OTg1Mjk2YmJiOCIsInVzZXJfaWQiOiIyIn0.B4T7ouHx1Z-DG8iPn8LMvlo8ad-Fef1SMUCOfeqoXfU",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzkzNDYzMzAxLCJpYXQiOjE3OTM0NjMwMDEsImp0aSI6ImFiZjMxNmFkOTdkZDQ5NTY5ZjhiYTkyYTJjZWZmN2EyIiwidXNlcl9pZCI6IjIifQ.xLZhcQkKF9l7AKzgvw9mGTZW9cq3DUgdYbhLFCVedvA"
+}
