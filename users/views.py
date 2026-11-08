@@ -15,6 +15,7 @@ from .serializers import (
     RegistrationSerializer,
     UserSerializer,
 )
+from .services.stripe import create_product, create_price, create_checkout_session
 
 User = get_user_model()
 
@@ -115,3 +116,46 @@ class SubscriptionAPIView(APIView):
             'message': 'Подписка добавлена.',
             'is_subscribed': True,
         })
+class PaymentCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        course_id = request.data.get('course_id')
+
+        if not course_id:
+            return Response(
+                {'error': 'Необходимо указать course_id.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        course = get_object_or_404(
+            Course,
+            pk=course_id,
+        )
+
+        product = create_product(course)
+
+        price = create_price(
+            product_id=product['id'],
+            amount=course.price,
+        )
+
+        session = create_checkout_session(
+            price_id=price['id'],
+        )
+
+        payment = Payment.objects.create(
+            user=request.user,
+            course=course,
+            amount=course.price,
+            payment_method='transfer',
+            stripe_product_id=product['id'],
+            stripe_price_id=price['id'],
+            stripe_session_id=session['id'],
+            payment_url=session['url'],
+        )
+
+        return Response(
+            PaymentSerializer(payment).data,
+            status=status.HTTP_201_CREATED,
+        )

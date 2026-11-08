@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -26,7 +29,6 @@ SECRET_KEY = "django-insecure-67ukt0t7-^v+alz44mreze8tjhepfy*qcjv)*)x++8ra#um(bj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     "django_filters",
     "users",
     "materials",
+    'drf_yasg',
+    'corsheaders',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +57,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -73,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
@@ -83,7 +89,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -103,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
@@ -115,12 +119,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
-
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -131,12 +133,9 @@ MAILERS = {
     },
 }
 
-
-
 AUTH_USER_MODEL = 'users.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -145,4 +144,22 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com",  # Замените на адрес вашего фронтенд-сервера
+    # и добавьте адрес бэкенд-сервера
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Platform Online Learning API',
+    'DESCRIPTION': 'API онлайн-платформы обучения',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
