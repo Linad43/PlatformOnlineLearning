@@ -1,0 +1,16 @@
+.venv/
+.git/
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+db.sqlite3
+celerybeat-schedule
+
+.env
